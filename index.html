@@ -1,0 +1,326 @@
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Конструктор Пасхального Яйца</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    @font-face {
+      font-family: 'CustomHeaderFont';
+      src: url('fonts/17734.ttf') format('truetype');
+    }
+
+    body {
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .header {
+      background-image: url("cat.jpg");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      width: 100%;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: black;
+      font-family: 'CustomHeaderFont', sans-serif;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+      -webkit-text-stroke: 1px white;
+    }
+
+    .constructor-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .control-btn {
+      width: 90px;
+      height: 45px;
+      background-color: black;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      cursor: pointer;
+    }
+
+    .egg-panel {
+      width: 300px;
+      height: auto;
+      border: 3px double black;
+      border-radius: 20px;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 20px;
+    }
+
+    .egg-display {
+      position: relative;
+      width: 270px;
+      height: 290px;
+    }
+
+    .egg-display img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+    }
+
+    #egg-outline { z-index: 10; }
+    #egg-background { z-index: 1; }
+    #egg-pattern { z-index: 5; }
+
+    #accessories-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 20;
+    }
+
+#galaxy-message {
+  background-color: Black;
+  color: White;
+  font-size: 13px; /* Было 16px */
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 12px;
+  margin-top: 10px;
+  box-shadow: -2px 2px 6px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 1s ease;
+  text-align: center;
+  max-width: 240px;
+  display: none;
+    }
+
+    #galaxy-message.show {
+      display: block;
+      opacity: 1;
+    }
+
+    .thumbnail-wrapper {
+      width: 100%;
+      max-width: 300px;
+      border: 3px double black;
+      border-radius: 20px;
+      background-color: white;
+      padding: 5px;
+      display: none;
+      position: relative;
+    }
+
+    .thumbnail-panel {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .thumbnail-panel img {
+      width: 60px;
+      height: 60px;
+      cursor: pointer;
+      border: 2px solid #ccc;
+      border-radius: 3px;
+    }
+
+    .thumbnail-panel img.selected {
+      border-color: #6495ED;
+    }
+
+    .scroll-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 30px;
+      height: 30px;
+      background-color: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    .scroll-left { left: -15px; }
+    .scroll-right { right: -15px; }
+
+    @media (max-width: 600px) {
+      .header {
+        height: 80px;
+        font-size: 20px;
+      }
+
+      .control-btn {
+        width: 80px;
+        height: 40px;
+        font-size: 14px;
+      }
+
+      .thumbnail-panel img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .egg-panel {
+        width: 270px;
+      }
+
+      .egg-display {
+        width: 240px;
+        height: 260px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Космические Яйца</div>
+
+  <div class="constructor-wrapper">
+    <div class="controls">
+      <button class="control-btn" data-type="background">Цвет</button>
+      <button class="control-btn" data-type="pattern">Узор</button>
+      <button class="control-btn" data-type="accessory">Аксессуар</button>
+    </div>
+
+    <div class="egg-panel">
+      <div class="egg-display" id="egg-display">
+        <img id="egg-background" src="eggs_background/white.png" alt="Фон яйца" />
+        <img id="egg-pattern" style="display:none;" alt="Узор" />
+        <div id="accessories-container"></div>
+        <img id="egg-outline" src="line/egg_line_and_shadow.png" alt="Контур" />
+      </div>
+      <div id="galaxy-message">Поздравляю! Вы собрали яйцо которое завоюет галактику!</div>
+    </div>
+
+    <div class="thumbnail-wrapper" id="thumbnail-wrapper">
+      <button class="scroll-button scroll-left" onclick="scrollThumbnails(-100)">←</button>
+      <div class="thumbnail-panel" id="thumbnail-panel"></div>
+      <button class="scroll-button scroll-right" onclick="scrollThumbnails(100)">→</button>
+    </div>
+  </div>
+
+  <script>
+    const controlButtons = document.querySelectorAll('.control-btn');
+    const thumbnailWrapper = document.getElementById('thumbnail-wrapper');
+    const thumbnailPanel = document.getElementById('thumbnail-panel');
+    const eggBackground = document.getElementById('egg-background');
+    const eggPattern = document.getElementById('egg-pattern');
+    const accessoriesContainer = document.getElementById('accessories-container');
+    const galaxyMessage = document.getElementById('galaxy-message');
+
+    const assets = {
+      background: ['white.png','red.png','orange.png','yellow.png','turquoise.png','blue.png','dark_blue.png','purple.png','pink.png','brown.png','black.png','beige.png'],
+      pattern: ['Freckles_Decian.png','White_pattern.png','Silvana_Decian.png','Rhombus_Ayen.png','Tattoo_Lais.png','Mayos_Swan.png','Kayeletta_tape.png', 'cake.png', 'heart.png', 'chronolite.png', 'space.png', 'lobster.png'],
+      accessory: ['cracks.png','blood.png','Ayens_thorns.png','Decian_clasp.png','piercing_Lais.png','Mayo_decoration.png','Crown_of_Kayelette.png','Merzella_snake.png','Merzella_dove.png','Merzella_wolf.png', 'Hydra.png']
+    };
+
+    const paths = {
+      background: 'eggs_background/',
+      pattern: 'egg_pattern/',
+      accessory: 'egg_accessory/'
+    };
+
+    let selectedAccessories = new Set();
+
+    controlButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const type = button.dataset.type;
+        showThumbnails(type);
+      });
+    });
+
+    function showThumbnails(type) {
+      thumbnailPanel.innerHTML = '';
+      assets[type].forEach(file => {
+        const img = document.createElement('img');
+        img.src = paths[type] + file;
+        img.alt = file;
+        if (selectedAccessories.has(file)) {
+          img.classList.add('selected');
+        }
+        img.addEventListener('click', () => {
+          handleSelection(type, file, img);
+        });
+        thumbnailPanel.appendChild(img);
+      });
+      thumbnailWrapper.style.display = 'block';
+    }
+
+    function handleSelection(type, file, element) {
+      if (type === 'background') {
+        eggBackground.src = paths[type] + file;
+      } else if (type === 'pattern') {
+        eggPattern.src = paths[type] + file;
+        eggPattern.style.display = 'block';
+      } else if (type === 'accessory') {
+        const accessoryId = `accessory-${file.replace(/\W/g, '')}`;
+
+        if (selectedAccessories.has(file)) {
+          const existing = document.getElementById(accessoryId);
+          if (existing) accessoriesContainer.removeChild(existing);
+          selectedAccessories.delete(file);
+          element.classList.remove('selected');
+        } else {
+          const img = document.createElement('img');
+          img.src = paths[type] + file;
+          img.alt = file;
+          img.style.position = 'absolute';
+          img.style.top = 0;
+          img.style.left = 0;
+          img.style.width = '100%';
+          img.style.height = 'auto';
+          img.id = accessoryId;
+          accessoriesContainer.appendChild(img);
+          selectedAccessories.add(file);
+          element.classList.add('selected');
+        }
+
+        checkGalaxyMessage();
+      }
+    }
+
+    function checkGalaxyMessage() {
+      const allSelected = assets.accessory.every(acc => selectedAccessories.has(acc));
+      if (allSelected) {
+        galaxyMessage.classList.add('show');
+        setTimeout(() => {
+          galaxyMessage.classList.remove('show');
+        }, 10000);
+      }
+    }
+
+    function scrollThumbnails(offset) {
+      thumbnailPanel.scrollLeft += offset;
+    }
+  </script>
+</body>
+</html>
